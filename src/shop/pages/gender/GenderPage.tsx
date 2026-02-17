@@ -1,5 +1,21 @@
+import { CustomPagination } from "@/components/custom/CustomPagination"
+import { products } from "@/mocks/products.mock"
+import { CustomJombotron } from "@/shop/components/CustomJumbotron"
+import { ProductsGrid } from "@/shop/components/ProductsGrid"
+import { useParams } from "react-router"
+
 export const GenderPage = () => {
+    const { gender } = useParams();
+
+    const genderLabel = gender === 'men' ? 'Man' : gender === 'women' ? 'Woman' : 'Kid';
     return (
-        <div>GenderPage</div>
+        <>
+            <CustomJombotron title={`Products for ${genderLabel}s`} description="Minimalist and elegant clothing inspired by Tesla's futuristic design. Premium quality for timeless style." />
+
+            <ProductsGrid products={products} />
+
+            {/* Pagination */}
+            <CustomPagination totalPages={7} />
+        </>
     )
 }
