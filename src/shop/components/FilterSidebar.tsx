@@ -10,6 +10,7 @@ export const FilterSidebar = () => {
 
     // Transformadolo a un array para manejarlo mejor, ya que puede ser multiple seleccion
     const currentSizes = searchParams.get("sizes")?.split(',') || []; // xs, s, m, l, xl, xxl
+    const currentPrice = searchParams.get("price") || "any";
 
     const handleSizeChange = (size: string) => {
         const newSizes = currentSizes.includes(size)
@@ -18,6 +19,12 @@ export const FilterSidebar = () => {
 
         searchParams.set("page", "1"); // Reiniciar a la página 1 al cambiar filtros
         searchParams.set("sizes", newSizes.join(','));
+        setSearchParams(searchParams);
+    }
+
+    const handlePriceChange = (price: string) => {
+        searchParams.set("page", "1"); // Reiniciar a la página 1 al cambiar filtros
+        searchParams.set("price", price);
         setSearchParams(searchParams);
     }
 
@@ -59,9 +66,9 @@ export const FilterSidebar = () => {
             {/* Price Range */}
             <div className="space-y-4">
                 <h4 className="font-medium">Precio</h4>
-                <RadioGroup defaultValue="" className="space-y-3">
+                <RadioGroup value={currentPrice} onValueChange={handlePriceChange} className="space-y-3">
                     <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="any" id="priceAny" />
+                        <RadioGroupItem value="any" id="priceAny" checked={currentPrice === "any"} />
                         <Label htmlFor="priceAny" className="text-sm cursor-pointer">Cualquier precio</Label>
                     </div>
                     <div className="flex items-center space-x-2">
