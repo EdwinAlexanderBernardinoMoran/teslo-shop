@@ -5,9 +5,8 @@ import { useProducts } from "@/shop/hooks/useProducts"
 import { useParams } from "react-router"
 
 export const GenderPage = () => {
-    const { data } = useProducts();
     const { gender } = useParams();
-
+    const { data } = useProducts();
 
     const genderLabel = gender === 'men' ? 'Man' : gender === 'women' ? 'Woman' : 'Kid';
     return (
@@ -17,7 +16,7 @@ export const GenderPage = () => {
             <ProductsGrid products={data?.products || []} />
 
             {/* Pagination */}
-            <CustomPagination totalPages={7} />
+            <CustomPagination totalPages={data?.pages || 1} />
         </>
     )
 }

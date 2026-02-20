@@ -18,7 +18,13 @@ export const FilterSidebar = () => {
             : [...currentSizes, size]; // Si no está seleccionado, lo añadimos
 
         searchParams.set("page", "1"); // Reiniciar a la página 1 al cambiar filtros
-        searchParams.set("sizes", newSizes.join(','));
+
+        if (!newSizes.join(',').length) {
+            searchParams.delete("sizes"); // Si no hay tallas seleccionadas, eliminamos el parámetro
+        } else {
+            searchParams.set("sizes", newSizes.join(','));
+        }
+
         setSearchParams(searchParams);
     }
 
