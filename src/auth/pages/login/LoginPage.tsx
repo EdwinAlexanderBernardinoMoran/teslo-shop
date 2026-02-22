@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react"
 import { Link, useNavigate } from "react-router"
+import { toast } from "sonner"
 
 import placeholderImage from "@/assets/placeholder.svg"
 
@@ -8,12 +9,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CustomLogo } from "@/components/custom/CustomLogo"
-import { loginAction } from "@/auth/actions/login.action"
-import { toast } from "sonner"
+
+import { useAuthStore } from "@/auth/store/auth.store"
 
 export const LoginPage = () => {
 
     const navigate = useNavigate();
+    const { login } = useAuthStore();
     const [isPosting, setIsPosting] = useState(false)
 
     const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -24,16 +26,14 @@ export const LoginPage = () => {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
-        try {
-            const data = await loginAction(email, password);
-            localStorage.setItem('token', data.token);
-            console.log('redireccionando al home');
+        const isLoginSucess = await login(email, password);
+
+        if (isLoginSucess) {
             navigate('/');
-        } catch (error) {
-            console.log(error);
-            toast.error('Login failed. Please check your credentials and try again.');
+            return
         }
 
+        toast.error('Login failed. Please check your credentials and try again.');
         setIsPosting(false);
     }
 
