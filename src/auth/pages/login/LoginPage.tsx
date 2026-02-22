@@ -1,22 +1,40 @@
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router"
+
+import placeholderImage from "@/assets/placeholder.svg"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import placeholderImage from "@/assets/placeholder.svg"
 import { CustomLogo } from "@/components/custom/CustomLogo"
-import { Link } from "react-router"
-import type { FormEvent } from "react"
+import { loginAction } from "@/auth/actions/login.action"
+import { toast } from "sonner"
 
 export const LoginPage = () => {
 
-    const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    const navigate = useNavigate();
+    const [isPosting, setIsPosting] = useState(false)
+
+    const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsPosting(true);
 
         const formData = new FormData(event.target as HTMLFormElement);
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
-        console.log({ email, password });
+        try {
+            const data = await loginAction(email, password);
+            localStorage.setItem('token', data.token);
+            console.log('redireccionando al home');
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+            toast.error('Login failed. Please check your credentials and try again.');
+        }
+
+        setIsPosting(false);
     }
 
     return (
@@ -42,8 +60,8 @@ export const LoginPage = () => {
                                 </div>
                                 <Input id="password" name="password" type="password" placeholder="Password" required />
                             </div>
-                            <Button type="submit" className="w-full">
-                                Login
+                            <Button type="submit" className="w-full" disabled={isPosting}>
+                                {isPosting ? 'Logging in...' : 'Login'}
                             </Button>
                             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                                 <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
