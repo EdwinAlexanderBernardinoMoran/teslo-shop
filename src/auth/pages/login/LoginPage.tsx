@@ -5,13 +5,25 @@ import { Label } from "@/components/ui/label"
 import placeholderImage from "@/assets/placeholder.svg"
 import { CustomLogo } from "@/components/custom/CustomLogo"
 import { Link } from "react-router"
+import type { FormEvent } from "react"
 
 export const LoginPage = () => {
+
+    const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        console.log({ email, password });
+    }
+
     return (
         <div className="flex flex-col gap-6">
             <Card className="overflow-hidden p-0">
                 <CardContent className="grid p-0 md:grid-cols-2">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" onSubmit={handleLogin}>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center text-center">
                                 <CustomLogo />
@@ -19,7 +31,7 @@ export const LoginPage = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" placeholder="m@example.com" required />
+                                <Input id="email" name="email" type="email" placeholder="m@example.com" required />
                             </div>
                             <div className="grid gap-2">
                                 <div className="flex items-center">
@@ -28,7 +40,7 @@ export const LoginPage = () => {
                                         Forgot your password?
                                     </a>
                                 </div>
-                                <Input id="password" type="password" placeholder="Password" required />
+                                <Input id="password" name="password" type="password" placeholder="Password" required />
                             </div>
                             <Button type="submit" className="w-full">
                                 Login
