@@ -6,15 +6,18 @@ import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-quer
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { Toaster } from "sonner";
-import { checkAuthAction } from "./auth/actions/check-auth.action";
 import { CustomFullScreenLoading } from "./components/custom/CustomFullScreenLoading";
+import { useAuthStore } from "./auth/store/auth.store";
 
 const queryClient = new QueryClient();
 
 const CheckAuthProvider = ({ children }: PropsWithChildren) => {
+
+    const { checkAuthStatus } = useAuthStore();
+
     const { isLoading } = useQuery({
         queryKey: ['auth'],
-        queryFn: checkAuthAction,
+        queryFn: checkAuthStatus,
         retry: false,
 
         // Se valida cada 2 horas, para mantener la sesión activa, si el usuario recarga la página, se validará inmediatamente y se reiniciará el contador
