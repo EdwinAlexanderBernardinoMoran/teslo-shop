@@ -12,6 +12,7 @@ type AuthState = {
     authStatus: AuthStatus,
 
     // Getters
+    isAdmin: () => boolean,
 
     // Actions
     login: (email: string, password: string) => Promise<boolean>;
@@ -19,11 +20,17 @@ type AuthState = {
     checkAuthStatus: () => Promise<boolean>;
 }
 
-export const useAuthStore = create<AuthState>()((set) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
     // Implementation del store
     user: null,
     token: null,
     authStatus: 'checking',
+
+    // Getters
+    isAdmin: () => {
+        const roles = get().user?.roles || [];
+        return roles.includes('admin');
+    },
 
     // Actions
     login: async (email: string, password: string) => {
