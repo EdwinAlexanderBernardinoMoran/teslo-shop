@@ -1,12 +1,14 @@
 import { useState } from 'react';
 
-import { useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 import { Link } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { X, Plus, Upload, Tag, SaveAll } from 'lucide-react';
 
 import { AdminTitle } from '@/admin/components/AdminTitle';
+import { useProduct } from '@/admin/hooks/useProduct';
+import { CustomFullScreenLoading } from '@/components/custom/CustomFullScreenLoading';
 
 interface Product {
     id: string;
@@ -23,6 +25,9 @@ interface Product {
 
 export const AdminProductPage = () => {
     const { id } = useParams();
+
+    const { isLoading, isError, data: product2 } = useProduct(id || '');
+    console.log({ isLoading, product2 });
 
     const productTitle = id === 'new' ? 'New product' : 'Edit product';
 
@@ -54,6 +59,15 @@ export const AdminProductPage = () => {
     const [dragActive, setDragActive] = useState(false);
 
     const availableSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
+    // Validators
+    if (isError) {
+        return <Navigate to="/admin/products" />;
+    }
+
+    if (isLoading) {
+        return <CustomFullScreenLoading />;
+    }
 
     const handleInputChange = (field: keyof Product, value: string | number) => {
         setProduct((prev) => ({ ...prev, [field]: value }));
