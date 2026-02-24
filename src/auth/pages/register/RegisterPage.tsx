@@ -1,17 +1,47 @@
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import placeholderImage from "@/assets/placeholder.svg"
 import { CustomLogo } from "@/components/custom/CustomLogo"
-import { Link } from "react-router"
+import { useAuthStore } from "@/auth/store/auth.store"
+import { toast } from "sonner"
 
 export const RegisterPage = () => {
+
+    const navigate = useNavigate();
+    const { register } = useAuthStore();
+    const [isPosting, setIsPosting] = useState(false)
+
+
+    const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsPosting(true);
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const fullName = formData.get('fullName') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        const isRegisterSucces = await register(fullName, email, password);
+
+        if (isRegisterSucces) {
+            navigate('/');
+            return
+        }
+
+        toast.error('Registration failed. Please check your details and try again.');
+        setIsPosting(false);
+    }
+
     return (
         <div className="flex flex-col gap-6">
             <Card className="overflow-hidden p-0">
                 <CardContent className="grid p-0 md:grid-cols-2">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" onSubmit={handleRegister}>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center text-center">
                                 <CustomLogo />
@@ -19,22 +49,22 @@ export const RegisterPage = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="fullname">Full Name</Label>
-                                <Input id="fullname" type="text" placeholder="John Doe" required />
+                                <Input id="fullname" name="fullName" type="text" placeholder="John Doe" required />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" placeholder="m@example.com" required />
+                                <Input id="email" name="email" type="email" placeholder="m@example.com" required />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" placeholder="Password" required />
+                                <Input id="password" name="password" type="password" placeholder="Password" required />
                             </div>
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <Input id="confirmPassword" type="password" placeholder="Confirm password" required />
-                            </div>
-                            <Button type="submit" className="w-full">
-                                Create Account
+                                <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" required />
+                            </div> */}
+                            <Button type="submit" className="w-full" disabled={isPosting}>
+                                {isPosting ? 'Creating account...' : 'Create account'}
                             </Button>
                             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                                 <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
