@@ -1,11 +1,20 @@
 import { AdminTitle } from "@/admin/components/AdminTitle"
+import { CustomFullScreenLoading } from "@/components/custom/CustomFullScreenLoading"
 import { CustomPagination } from "@/components/custom/CustomPagination"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { PlusIcon } from "lucide-react"
+import { currencyFormatter } from "@/lib/currency-formatter"
+import { useProducts } from "@/shop/hooks/useProducts"
+import { PencilIcon, PlusIcon } from "lucide-react"
 import { Link } from "react-router"
 
 export const AdminProductsPage = () => {
+    const { data, isLoading } = useProducts();
+
+    if (isLoading) {
+        return <CustomFullScreenLoading />
+    }
+
     return (
         <>
             <div className="flex justify-between items-center">
@@ -26,35 +35,43 @@ export const AdminProductsPage = () => {
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-25">ID</TableHead>
-                        <TableHead>Image</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Inventory</TableHead>
-                        <TableHead>Sizes</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="font-bold">Image</TableHead>
+                        <TableHead className="font-bold">Name</TableHead>
+                        <TableHead className="font-bold">Price</TableHead>
+                        <TableHead className="font-bold">Category</TableHead>
+                        <TableHead className="font-bold">Inventory</TableHead>
+                        <TableHead className="font-bold">Sizes</TableHead>
+                        <TableHead className="font-bold text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow>
-                        <TableCell className="font-medium">INV001</TableCell>
-                        <TableCell>
-                            <img src="https://placehold.co/250x250" alt="product" className="w-20 h-20 object-cover rounded-md" />
-                        </TableCell>
-                        <TableCell>Product One</TableCell>
-                        <TableCell>$250.00</TableCell>
-                        <TableCell>Category One</TableCell>
-                        <TableCell>100 stock</TableCell>
-                        <TableCell>XS, S, L</TableCell>
-                        <TableCell>
-                            <Link to="/admin/products/INV001">Editar</Link>
-                        </TableCell>
-                    </TableRow>
+
+                    {data?.products.map((product) => (
+                        <TableRow key={product.id}>
+                            <TableCell className="font-medium">{product.id.slice(0, 8)}</TableCell>
+                            <TableCell>
+                                <img src={product.images[0]} alt={product.title} className="w-20 h-20 object-cover rounded-md" />
+                            </TableCell>
+                            <TableCell>{product.title}</TableCell>
+                            <TableCell>{currencyFormatter(product.price)}</TableCell>
+                            <TableCell>
+                                <span className="bg-blue-400 text-white text-xs  font-medium px-2.5 py-1.5 rounded">{product.gender}</span>
+                            </TableCell>
+                            <TableCell>{product.stock}</TableCell>
+                            <TableCell className="font-300">{product.sizes.join(', ')}</TableCell>
+                            <TableCell>
+                                <Link to={`/admin/products/${product.id}`} className="w-4 h-4 text-blue-500  ">
+                                    <PencilIcon />
+                                </Link>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+
                 </TableBody>
             </Table>
 
             {/* Pagination */}
-            <CustomPagination totalPages={10} />
+            <CustomPagination totalPages={data?.pages || 0} />
         </>
     )
 }
