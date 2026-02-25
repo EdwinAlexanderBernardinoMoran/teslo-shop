@@ -8,6 +8,7 @@ import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/interfaces/product.interface";
 import { SaveAll, Tag, Upload, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ProductFormProps {
     title: string;
@@ -22,7 +23,7 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
     console.log({ product });
 
     const [dragActive, setDragActive] = useState(false);
-    const { register } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: product,
     })
 
@@ -82,8 +83,12 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
         console.log(files);
     };
 
+    const onSubmit = (productLike: Product) => {
+        console.log(productLike);
+    }
+
     return (
-        <>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-between items-center">
                 <AdminTitle title={title} subtitle={subtitle} />
                 <div className="flex justify-end mb-10 gap-4">
@@ -118,12 +123,21 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        // value={product.title}
-                                        // onChange={(e) => handleInputChange('title', e.target.value)}
-                                        {...register('title')}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        {...register('title', {
+                                            required: true,
+                                        })}
+                                        className={cn('w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200', {
+                                            'border-red-500 focus:ring-red-500': errors.title,
+                                        })}
                                         placeholder="Title of the product"
                                     />
+                                    {
+                                        errors.title && (
+                                            <p className="text-sm text-red-600 mt-1">
+                                                Title is required
+                                            </p>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -133,14 +147,22 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                         </label>
                                         <input
                                             type="number"
-                                            // value={product.price}
-                                            // onChange={(e) =>
-                                            //     handleInputChange('price', parseFloat(e.target.value))
-                                            // }
-                                            {...register('price')}
-                                            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                            {...register('price', {
+                                                required: true,
+                                                min: 1
+                                            })}
+                                            className={cn('w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200', {
+                                                'border-red-500 focus:ring-red-500': errors.price,
+                                            })}
                                             placeholder="Price of the product"
                                         />
+                                        {
+                                            errors.price && (
+                                                <p className="text-sm text-red-600 mt-1">
+                                                    Price is required
+                                                </p>
+                                            )
+                                        }
                                     </div>
 
                                     <div>
@@ -149,14 +171,22 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                         </label>
                                         <input
                                             type="number"
-                                            // value={product.stock}
-                                            // onChange={(e) =>
-                                            //     handleInputChange('stock', parseInt(e.target.value))
-                                            // }
-                                            {...register('stock')}
-                                            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                            {...register('stock', {
+                                                required: true,
+                                                min: 1
+                                            })}
+                                            className={cn(`w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`, {
+                                                'border-red-500 focus:ring-red-500': errors.stock,
+                                            })}
                                             placeholder="Stock of the product"
                                         />
+                                        {
+                                            errors.stock && (
+                                                <p className="text-sm text-red-600 mt-1">
+                                                    Stock is required
+                                                </p>
+                                            )
+                                        }
                                     </div>
                                 </div>
 
@@ -166,12 +196,22 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        // value={product.slug}
-                                        // onChange={(e) => handleInputChange('slug', e.target.value)}
-                                        {...register('slug')}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        {...register('slug', {
+                                            required: true,
+                                            validate: (value) => !/\s/.test(value) || 'The slug cannot contain spaces.'
+                                        })}
+                                        className={cn(`w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`, {
+                                            'border-red-500 focus:ring-red-500': errors.slug,
+                                        })}
                                         placeholder="Slug of the product"
                                     />
+                                    {
+                                        errors.slug && (
+                                            <p className="text-sm text-red-600 mt-1">
+                                                {errors.slug.type === 'required' ? 'Slug is required' : errors.slug.message}
+                                            </p>
+                                        )
+                                    }
                                 </div>
 
                                 <div>
@@ -179,10 +219,6 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                         Gender of the product
                                     </label>
                                     <select
-                                        // value={product.gender}
-                                        // onChange={(e) =>
-                                        //     handleInputChange('gender', e.target.value)
-                                        // }
                                         {...register('gender')}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     >
@@ -198,15 +234,22 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                                         Description of the product
                                     </label>
                                     <textarea
-                                        // value={product.description}
-                                        // onChange={(e) =>
-                                        //     handleInputChange('description', e.target.value)
-                                        // }
-                                        {...register('description')}
+                                        {...register('description', {
+                                            required: true,
+                                        })}
                                         rows={5}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                                        className={cn(`w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none`, {
+                                            'border-red-500 focus:ring-red-500': errors.description,
+                                        })}
                                         placeholder="Description of the product"
                                     />
+                                    {
+                                        errors.description && (
+                                            <p className="text-sm text-red-600 mt-1">
+                                                Description is required
+                                            </p>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -425,6 +468,6 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
                     </div>
                 </div>
             </div>
-        </>
+        </form>
     );
 }
