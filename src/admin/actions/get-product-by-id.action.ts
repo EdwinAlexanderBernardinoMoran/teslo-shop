@@ -22,7 +22,7 @@ export const getProductByIdAction = async (id: string): Promise<Product> => {
     const { data } = await tesloApi.get<Product>(`/products/${id}`);
     const images = data.images.map(image => {
         if (image.includes("http")) return image;
-        return `${tesloApi.defaults.baseURL}/file/product/${image}`;
+        return `${tesloApi.defaults.baseURL}/files/product/${image}`;
     });
 
     return {

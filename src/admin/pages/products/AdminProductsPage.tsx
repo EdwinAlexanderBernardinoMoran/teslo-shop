@@ -11,6 +11,9 @@ import { Link } from "react-router"
 export const AdminProductsPage = () => {
     const { data, isLoading } = useProducts();
 
+    console.log({ data });
+
+
     if (isLoading) {
         return <CustomFullScreenLoading />
     }
