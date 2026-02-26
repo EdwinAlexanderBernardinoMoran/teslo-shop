@@ -3,23 +3,10 @@ import { useProduct } from '@/admin/hooks/useProduct';
 import { CustomFullScreenLoading } from '@/components/custom/CustomFullScreenLoading';
 import { ProductForm } from './ui/ProductForm';
 
-// interface Product {
-//     id: string;
-//     title: string;
-//     price: number;
-//     description: string;
-//     slug: string;
-//     stock: number;
-//     sizes: string[];
-//     gender: string;
-//     tags: string[];
-//     images: string[];
-// }
-
 export const AdminProductPage = () => {
     const { id } = useParams();
 
-    const { isLoading, isError, data: product } = useProduct(id || '');
+    const { isLoading, isError, data: product, handleSubmitForm } = useProduct(id || '');
 
     const title = id === 'new' ? 'New product' : 'Edit product';
 
@@ -41,5 +28,5 @@ export const AdminProductPage = () => {
         return <Navigate to="/admin/products" />;
     }
 
-    return <ProductForm product={product} title={title} subtitle={subtitle} />;
+    return <ProductForm product={product} title={title} subtitle={subtitle} onSubmit={handleSubmitForm} />;
 };

@@ -14,13 +14,13 @@ interface ProductFormProps {
     title: string;
     subtitle: string;
     product: Product;
+
+    onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
-
-    console.log({ product });
+export const ProductForm = ({ title, subtitle, product, onSubmit }: ProductFormProps) => {
 
     const [dragActive, setDragActive] = useState(false);
     const { register, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm({
@@ -84,10 +84,6 @@ export const ProductForm = ({ title, subtitle, product }: ProductFormProps) => {
         const files = e.target.files;
         console.log(files);
     };
-
-    const onSubmit = (productLike: Product) => {
-        console.log(productLike);
-    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

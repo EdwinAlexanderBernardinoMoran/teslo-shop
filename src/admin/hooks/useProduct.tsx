@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getProductByIdAction } from "../actions/get-product-by-id.action"
+import type { Product } from "@/interfaces/product.interface";
 
 export const useProduct = (id: string) => {
 
@@ -11,9 +12,14 @@ export const useProduct = (id: string) => {
 
     })
 
+    const handleSubmitForm = async (productLike: Partial<Product>) => {
+        console.log(productLike);
+    }
+
     // TODO: mutacion
 
     return {
         ...query,
+        handleSubmitForm,
     };
 };
