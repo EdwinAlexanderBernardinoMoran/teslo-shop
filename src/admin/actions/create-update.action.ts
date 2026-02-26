@@ -1,7 +1,11 @@
 import { tesloApi } from "@/api/teslo.api";
 import type { Product } from "@/interfaces/product.interface";
+import { sleep } from "@/lib/sleep";
 
 export const createUpdateProductAction = async (productLike: Partial<Product>): Promise<Product> => {
+
+    await sleep(1500); // Simula una espera de 1.5 segundos
+
     const { id, user, images = [], ...rest } = productLike;
 
     const isCreating = id === 'new';

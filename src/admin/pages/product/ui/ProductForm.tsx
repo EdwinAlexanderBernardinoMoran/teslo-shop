@@ -7,20 +7,21 @@ import { AdminTitle } from "@/admin/components/AdminTitle";
 
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
-import { Plus, SaveAll, Tag, Upload, X } from "lucide-react";
+import { Loader, Plus, SaveAll, Tag, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductFormProps {
     title: string;
     subtitle: string;
     product: Product;
+    isLoading: boolean;
 
     onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-export const ProductForm = ({ title, subtitle, product, onSubmit }: ProductFormProps) => {
+export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: ProductFormProps) => {
 
     const [dragActive, setDragActive] = useState(false);
     const { register, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm({
@@ -90,16 +91,25 @@ export const ProductForm = ({ title, subtitle, product, onSubmit }: ProductFormP
             <div className="flex justify-between items-center">
                 <AdminTitle title={title} subtitle={subtitle} />
                 <div className="flex justify-end mb-10 gap-4">
-                    <Button variant="outline">
+                    <Button variant="outline" type="button">
                         <Link to="/admin/products" className="flex items-center gap-2">
                             <X className="w-4 h-4" />
                             Cancel
                         </Link>
                     </Button>
 
-                    <Button>
-                        <SaveAll className="w-4 h-4" />
-                        Save changes
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? (
+                            <>
+                                <Loader className="w-4 h-4 animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <SaveAll className="w-4 h-4" />
+                                Save changes
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>
