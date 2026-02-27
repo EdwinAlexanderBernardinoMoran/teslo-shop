@@ -42,10 +42,11 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
     const selectedSizes = watch('sizes');
     const selectedTags = watch('tags');
     const currentStock = watch('stock');
+    const currentImages = watch('images');
+
 
 
     const addTag = () => {
-
         const newTag = inputRef.current!.value.trim();
 
         if (newTag === '') return;
@@ -69,6 +70,10 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
 
     const removeSize = (sizeToRemove: Size) => {
         setValue('sizes', selectedSizes.filter((size) => size !== sizeToRemove));
+    };
+
+    const removeImage = (imageToRemove: string) => {
+        setValue('images', currentImages.filter((image) => image !== imageToRemove));
     };
 
     const handleDrag = (e: React.DragEvent) => {
@@ -426,7 +431,7 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
 
                                 </h3>
                                 <div className="grid grid-cols-2 gap-3">
-                                    {product.images.map((image, index) => (
+                                    {currentImages.map((image, index) => (
                                         <div key={index} className="relative group">
                                             <div className="aspect-square bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center">
                                                 <img
@@ -435,7 +440,7 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
                                             </div>
-                                            <button className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                            <button type="button" className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200" onClick={() => removeImage(image)}>
                                                 <X className="h-3 w-3" />
                                             </button>
                                             <p className="mt-1 text-xs text-slate-600 truncate">
