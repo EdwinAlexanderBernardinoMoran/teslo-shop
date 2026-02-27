@@ -29,6 +29,7 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
     })
 
     const inputRef = useRef<HTMLInputElement>(null);
+    const [files, setFiles] = useState<File[]>([]);
 
     const selectedSizes = watch('sizes');
     const selectedTags = watch('tags');
@@ -77,12 +78,16 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
         e.stopPropagation();
         setDragActive(false);
         const files = e.dataTransfer.files;
-        console.log(files);
+
+        if (!files) return;
+        setFiles((prev) => [...prev, ...Array.from(files)]);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        console.log(files);
+        if (!files) return;
+
+        setFiles((prev) => [...prev, ...Array.from(files)]);
     };
 
     return (
@@ -425,6 +430,34 @@ export const ProductForm = ({ title, subtitle, product, isLoading, onSubmit }: P
                                             </p>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+
+                            {/* images to upload */}
+                            <div className="mt-6 space-y-3">
+                                <h3 className="text-sm font-medium text-slate-700">
+                                    Images to upload
+
+                                </h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {
+                                        files.map((file, index) => (
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt="Product"
+                                                key={index}
+                                                className="w-full h-full object-cover rounded-lg"
+                                            />
+                                        ))
+                                    }
+
+                                    {
+                                        files.length === 0 && (
+                                            <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                                No new images selected
+                                            </span>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
