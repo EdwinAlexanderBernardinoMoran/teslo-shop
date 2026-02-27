@@ -16,7 +16,7 @@ export const AdminHeader: React.FC = () => {
       navigate('/admin/products');
     }
 
-    navigate(`/admin/products?q=${query}`);
+    navigate(`/admin/products?query=${query}`);
   }
 
   return (

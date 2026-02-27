@@ -34,9 +34,6 @@ export const useProducts = () => {
             break;
     }
 
-    console.log({ price });
-
-
     const offset = (Number(page) - 1) * Number(limit);
 
     return useQuery({
